@@ -1,10 +1,9 @@
 # Prodify
-A play on "product" and "simplify".
-<h1 align="center">MERN Crash Course 🚀</h1>
 
-![Demo App](/frontend/public/screenshot-for-readme.png)
+<h1 align="center">A play on "product" and "simplify".</h1>
 
-About This Course:
+
+
 
 - ⚛️ Tech Stack: React.js, Node.js, Express.js, MongoDB, Chakra UI
 - 🔥 Build an API
