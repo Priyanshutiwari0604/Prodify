@@ -1,0 +1,12 @@
+# Ignore .env files
+.env
+.env.local
+
+# Ignore node_modules
+node_modules/
+
+# Other common ignores (optional)
+.DS_Store
+.idea/
+dist/
+*.log
