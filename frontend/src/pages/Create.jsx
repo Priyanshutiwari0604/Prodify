@@ -18,6 +18,7 @@ const Create = () => {
     price: "",
     image: "",
   })
+  const [isLoading, setIsLoading] = useState(false)
 
   const bg = useColorModeValue('white', 'gray.800')
   const toast = useToast()
@@ -32,6 +33,7 @@ const Create = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     
     // Basic validation
     if (!newProduct.name || !newProduct.price || !newProduct.image) {
@@ -42,41 +44,61 @@ const Create = () => {
         duration: 3000,
         isClosable: true,
       })
+      setIsLoading(false)
       return
     }
 
-    // TODO: Add your API call here
-    console.log("Product to create:", newProduct)
-    
-    // Reset form after successful submission
-    setNewProduct({
-      name: "",
-      price: "",
-      image: "",
-    })
+    try {
+      const response = await fetch('/api/products', { // Replace with your actual API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      })
 
-    toast({
-      title: "Success",
-      description: "Product created successfully!",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    })
+      if (!response.ok) {
+        throw new Error('Failed to create product')
+      }
+
+      // Reset form after successful submission
+      setNewProduct({
+        name: "",
+        price: "",
+        image: "",
+      })
+
+      toast({
+        title: "Success",
+        description: "Product created successfully!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create product",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <Container maxW={"container.sm"}>
-      <VStack spacing={8}>
-        <Heading as="h1" size="2xl" textAlign="center" mb={8}>
-          Create New Product
-        </Heading>
-        
-        <Box w={"full"} bg={bg} p={6} rounded={"lg"} shadow={"md"}>
+    <Container maxW="container.md" py={10}>
+      <VStack spacing={8} align="stretch">
+        <Box bg={bg} p={6} borderRadius="lg" boxShadow="md">
+          <Heading as="h2" size="lg" mb={6}>Create New Product</Heading>
+          
           <form onSubmit={handleSubmit}>
             <VStack spacing={4}>
               <FormControl isRequired>
                 <FormLabel>Product Name</FormLabel>
-                <Input
+                <Input 
                   name="name"
                   value={newProduct.name}
                   onChange={handleInputChange}
@@ -86,7 +108,7 @@ const Create = () => {
 
               <FormControl isRequired>
                 <FormLabel>Price</FormLabel>
-                <Input
+                <Input 
                   name="price"
                   type="number"
                   value={newProduct.price}
@@ -97,7 +119,7 @@ const Create = () => {
 
               <FormControl isRequired>
                 <FormLabel>Image URL</FormLabel>
-                <Input
+                <Input 
                   name="image"
                   value={newProduct.image}
                   onChange={handleInputChange}
@@ -105,12 +127,12 @@ const Create = () => {
                 />
               </FormControl>
 
-              <Button
-                type="submit"
-                colorScheme="blue"
-                size="lg"
-                w="full"
-                mt={4}
+              <Button 
+                type="submit" 
+                colorScheme="teal" 
+                width="full"
+                isLoading={isLoading}
+                loadingText="Creating..."
               >
                 Create Product
               </Button>
